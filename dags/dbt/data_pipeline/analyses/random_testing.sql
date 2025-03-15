@@ -1,1 +1,1 @@
-select * from {{ ref('match_info') }}
+select * from {{ ref('match_innings') }}
