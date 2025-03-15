@@ -1,0 +1,213 @@
+models:
+  - name: int_match_info
+    columns:
+      - name: filename
+        description: Name of the file
+        tests:
+          - unique
+          - not_null
+
+      - name: match_type
+        description: Type of Match played
+
+      - name: gender
+        description: Match Gender
+        data_tests:
+          - accepted_values:
+              values: ['male', 'female']
+      
+      - name: season
+        description: Match Season (year)
+
+      - name: city
+        description: Match City
+      
+      - name: venue
+        description: Match Venue
+      
+      - name: event_type
+        description: Type of event-> international, domestic
+      
+      - name: event_name
+        description: Name of the match
+
+      - name: winner_name
+        description: Team who won the match
+        tests:
+          - relationships:
+              to: ref('int_team')
+              field: team
+
+      - name: toss_decision
+        description: Toss decision in the match
+        tests:
+          - accepted_values:
+              values: ['bat', 'field']
+      
+      - name: toss_winner
+        description: Team who won the toss
+        tests:
+          - relationships:
+              to: ref('int_team')
+              field: team
+
+      - name: team1_name
+        description: Name of the first team
+        tests:
+          - relationships:
+              to: ref('int_team')
+              field: team
+      
+      - name: team2_name
+        description: Name of the second team
+        tests:
+          - relationships:
+              to: ref('int_team')
+              field: team
+      
+      - name: match_start_date
+        description: Date when match started
+
+      - name: player_of_match
+        description: Player of the match
+        tests:
+          - relationships:
+              to: ref('int_players')
+              field: team_player
+      
+      - name: win_type
+        description: How the team won the match
+        tests:
+          - accepted_values:
+              values: ['runs', 'wickets', 'tie']
+
+      - name: win_margin
+        description: By how much team won the match
+    
+  - name: int_team
+    columns:
+      - name: team
+        description: Name of the team
+        tests:
+          - unique
+      - name: team_type
+        description: '{{ doc("team_type") }}'
+
+  - name: int_players
+    columns:
+      - name: team_name
+        description: Team name
+        tests:
+          - relationships:
+              to: ref('int_team')
+              field: team
+
+      - name: team_player
+        description: Name of the player
+        tests:
+          - not_null
+
+  - name: int_match_innings
+    columns:
+      - name: filename
+        description: Name of the file
+        tests:
+          - not_null
+
+      - name: inning_id
+        description: Current Inning number of the match
+        tests:
+          - positive_value_check:
+              config:
+                store_failures: true
+                schema: failures
+
+      - name: runs_batter
+        description: Runs scored by batter
+        tests:
+          - positive_value_check:
+              config:
+                store_failures: true
+                schema: failures
+
+      - name: over
+        description: Over of the match
+        tests:
+          - positive_value_check:
+              config:
+                store_failures: true
+                schema: failures
+
+      - name: ball_in_over
+        description: Ball in Over of the match
+        tests:
+          - positive_value_check:
+              config:
+                store_failures: true
+                schema: failures
+
+      - name: batter_team
+        description: Name of the batting team
+        tests:
+          - relationships:
+              to: ref('int_team')
+              field: team
+
+      - name: batter
+        description: Name of the batter
+        tests:
+          - relationships:
+              to: ref('int_players')
+              field: team_player
+
+      - name: bowler
+        description: Name of the bowler
+        tests:
+          - relationships:
+              to: ref('int_players')
+              field: team_player
+
+      - name: non_striker
+        description: Name of the non_striker
+        tests:
+          - relationships:
+              to: ref('int_players')
+              field: team_player
+
+      - name: runs_extras
+        description: Extra runs
+        tests:
+          - positive_value_check:
+              config:
+                store_failures: true
+                schema: failures
+                
+      - name: runs_total
+        description: Total runs in that over
+        tests:
+          - positive_value_check:
+              config:
+                store_failures: true
+                schema: failures
+
+      - name: dismissal_kind
+        description: What kind of dismissal the player got out
+
+      - name: player_out
+        description: Player who got out in the over
+        tests:
+        - relationships:
+            to: ref('int_players')
+            field: team_player
+
+      - name: fielder_name
+        description: Fielder of the match
+
+      - name: is_powerplay
+        description: Indication if the over is powerplay
+        tests:
+          - accepted_values:
+              values: [1,0]
+
+      - name: extra_type
+        description: What type of extra was provided

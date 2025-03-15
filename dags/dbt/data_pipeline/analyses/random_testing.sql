@@ -1,0 +1,1 @@
+select * from {{ ref('match_info') }}
