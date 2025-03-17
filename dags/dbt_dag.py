@@ -21,7 +21,7 @@ profile_config = ProfileConfig(
 
 
 @dag(
-    schedule_interval="*/10 * * * *",
+    schedule_interval="@daily",
     start_date=datetime(2023, 1, 1),
     catchup=False,
 )
