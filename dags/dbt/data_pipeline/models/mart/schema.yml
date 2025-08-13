@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: match_info
+    description: "Information related to the matches played"
+    columns:
+      - name: gender
+        description: "Gender of the Players"
+        data_tests:
+          - accepted_values:
+              values: ["male", "female"]
+      - name: event_type
+        description: "Type of match played"
+        data_tests:
+          - accepted_values:
+              values: ["international", "club"]
+      - name: winner_team_id
+        description: "ID of the Winning team"
+        data_tests:
+          - relationships:
+              to: ref("teams") 
+              field: team_id
+              config:
+                store_failures: true
+                schema: failures
+      - name: match_id
+        description: "unique id of the match played"
+        data_tests:
+          - unique
+          - not_null
+      - name: win_margin
+        description: "By how much the winning team won"
+        data_tests:
+          - positive_value_check
