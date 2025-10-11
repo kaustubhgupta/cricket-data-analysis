@@ -19,6 +19,18 @@ profile_config = ProfileConfig(
     )
 )
 
+project_config = ProjectConfig(
+    f"{os.environ['AIRFLOW_HOME']}/dags/dbt/data_pipeline"
+)
+
+execution_config = ExecutionConfig(
+     dbt_executable_path=f"{os.environ['AIRFLOW_HOME']}/dbt_venv/bin/dbt",
+     invocation_mode=InvocationMode.SUBPROCESS
+)
+
+render_config = RenderConfig(
+      enable_mock_profile=False,  # This is necessary to benefit from partial parsing when using ProfileMapping
+)
 
 @dag(
     schedule_interval="@daily",
@@ -36,16 +48,11 @@ def main_dag():
     # Define DBT Task Group (without dag=dag)
     dbt_snowflake_dag = DbtTaskGroup(
         group_id='dbt_task',
-        project_config=ProjectConfig("/usr/local/airflow/dags/dbt/data_pipeline"),
-        operator_args={"install_deps": True},
+        project_config=project_config,
         profile_config=profile_config,
-        execution_config=ExecutionConfig(
-            dbt_executable_path=f"{os.environ['AIRFLOW_HOME']}/dbt_venv/bin/dbt",
-            invocation_mode=InvocationMode.SUBPROCESS
-        ),
-        render_config=RenderConfig(
-            enable_mock_profile=False,  # This is necessary to benefit from partial parsing when using ProfileMapping
-        ),
+        execution_config=execution_config,
+        render_config=render_config,
+        operator_args={"install_deps": True}
     )
 
     # Ensure the custom task runs before DBT
